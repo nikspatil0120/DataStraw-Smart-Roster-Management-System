@@ -1,4 +1,5 @@
 """FastAPI application."""
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
@@ -20,7 +21,10 @@ from app.api.routes import (
     export,
     analytics,
 )
-import logging
+
+# Configure logging first
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Initialize app (table creation happens in startup event)
 app = FastAPI(
@@ -32,7 +36,8 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-# CORS middleware
+# CORS middleware - log the origins
+logger.info(f"[STARTUP] Allowed CORS origins: {settings.allowed_origins}")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins,
@@ -40,10 +45,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Startup event to create tables
 @app.on_event("startup")
