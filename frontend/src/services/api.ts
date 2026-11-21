@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+// Use relative path /api instead of absolute URL - Vercel will proxy it
+const API_URL = typeof window !== 'undefined' ? '/api' : 'http://localhost:8000/api'
 
 const api = axios.create({
   baseURL: API_URL,
