@@ -1,7 +1,8 @@
 """FastAPI application."""
 import logging
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from app.config import settings
 from app.database import Base, engine
 from app.api.routes import (
@@ -36,14 +37,15 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-# CORS middleware - log the origins
-logger.info(f"[STARTUP] Allowed CORS origins: {settings.allowed_origins}")
+# Add CORS middleware with explicit configuration
+logger.info(f"[STARTUP] Configuring CORS with allow_origins: *")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.allowed_origins,
+    allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Startup event to create tables
@@ -95,10 +97,18 @@ async def root():
 async def general_exception_handler(request, exc):
     """General exception handler."""
     logger.exception(f"Unhandled exception: {exc}")
-    return {
-        "detail": "Internal server error",
-        "type": type(exc).__name__,
-    }
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": "Internal server error",
+            "type": type(exc).__name__,
+        },
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        }
+    )
 
 
 if __name__ == "__main__":
