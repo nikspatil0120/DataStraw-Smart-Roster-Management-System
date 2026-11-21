@@ -37,15 +37,16 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-# Add CORS middleware with explicit configuration
-logger.info(f"[STARTUP] Configuring CORS with allow_origins: *")
+# Add CORS middleware with explicit preflight handling
+logger.info("[STARTUP] Configuring CORS to allow all origins")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
     expose_headers=["*"],
+    max_age=3600,
 )
 
 # Startup event to create tables
@@ -75,6 +76,20 @@ app.include_router(availability.router)
 app.include_router(export.router)
 app.include_router(analytics.router)
 
+# Handle preflight requests explicitly
+@app.options("/{full_path:path}")
+async def preflight_handler(full_path: str):
+    """Handle CORS preflight requests."""
+    return JSONResponse(
+        content={},
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Max-Age": "3600",
+        }
+    )
 
 @app.get("/health")
 async def health_check():
@@ -105,8 +120,6 @@ async def general_exception_handler(request, exc):
         },
         headers={
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "*",
-            "Access-Control-Allow-Headers": "*",
         }
     )
 

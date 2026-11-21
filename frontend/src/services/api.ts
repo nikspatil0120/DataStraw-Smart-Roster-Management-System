@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// Use root path / - Vercel proxy will route /api/* to Railway backend
-const API_URL = typeof window !== 'undefined' ? '' : 'http://localhost:8000'
+// Always use the Railway API URL directly
+const API_URL = 'https://datastraw-smart-roster-management-system-production.up.railway.app'
 
 const api = axios.create({
   baseURL: API_URL,
