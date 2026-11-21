@@ -16,12 +16,13 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     
-    # CORS - read from env or use defaults
+    # CORS - allow Vercel and localhost
     allowed_origins: List[str] = [
         "http://localhost:5173",
         "http://localhost:3000",
         "https://data-straw-smart-roster-management-neon.vercel.app",
         "https://datastraw-smart-roster-management-neon.vercel.app",
+        "*",  # Allow all origins for now (will restrict later)
     ]
     
     # Environment
