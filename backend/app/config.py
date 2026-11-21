@@ -1,15 +1,14 @@
 """Application configuration."""
 from pydantic_settings import BaseSettings
 from typing import List
-from pydantic import Field
 import os
 
 
 class Settings(BaseSettings):
     """Application settings."""
     
-    # Database - explicitly read from env
-    database_url: str = Field(default="postgresql://postgres:postgres@localhost:5432/datastraw")
+    # Database - automatically reads DATABASE_URL from environment
+    database_url: str = "postgresql://postgres:postgres@localhost:5432/datastraw"
     sqlalchemy_echo: bool = False
     
     # JWT
@@ -28,17 +27,11 @@ class Settings(BaseSettings):
     solver_time_limit_seconds: int = 60
     solver_random_seed: int = 42
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
-        # Allow reading DATABASE_URL environment variable
-        fields = {
-            "database_url": {
-                "env": ["database_url", "DATABASE_URL"]
-            }
-        }
+    model_config = {"env_file": ".env", "case_sensitive": False}
 
 
 settings = Settings()
 # Debug: print what was loaded
-print(f"[CONFIG] Loaded database_url: {settings.database_url[:50]}...")
+db_url = settings.database_url
+print(f"[CONFIG] Loaded database_url: {db_url[:60] if db_url else 'EMPTY'}...")
+print(f"[CONFIG] DATABASE_URL from env: {os.getenv('DATABASE_URL', 'NOT SET')[:60] if os.getenv('DATABASE_URL') else 'NOT SET'}...")
