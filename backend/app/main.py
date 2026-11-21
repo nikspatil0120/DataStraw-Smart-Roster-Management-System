@@ -22,10 +22,7 @@ from app.api.routes import (
 )
 import logging
 
-# Create tables
-Base.metadata.create_all(bind=engine)
-
-# Initialize app
+# Initialize app (table creation happens in startup event)
 app = FastAPI(
     title="Smart Roster Management System",
     description="Enterprise roster scheduling system",
@@ -47,6 +44,16 @@ app.add_middleware(
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Startup event to create tables
+@app.on_event("startup")
+async def startup_event():
+    """Create database tables on startup."""
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("✅ Database tables initialized")
+    except Exception as e:
+        logger.error(f"❌ Failed to initialize database tables: {e}")
 
 # Include routers
 app.include_router(auth.router)
