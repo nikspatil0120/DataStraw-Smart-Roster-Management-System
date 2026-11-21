@@ -15,5 +15,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application
 COPY . .
 
-# Run migrations and start server
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0"]
+# Set environment
+ENV PYTHONUNBUFFERED=1
+ENV ENVIRONMENT=production
+
+# Run migrations if needed, then start server
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

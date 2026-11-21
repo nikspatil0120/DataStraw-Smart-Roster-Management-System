@@ -2,21 +2,22 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:15
+    image: postgres:15-alpine
     container_name: datastraw-postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: datastraw
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-datastraw}
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   backend:
     build:
@@ -24,19 +25,20 @@ services:
       dockerfile: Dockerfile
     container_name: datastraw-backend
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/datastraw
-      SECRET_KEY: dev-secret-key-change-in-production
-      ENVIRONMENT: development
-      DEBUG: "true"
-      ALLOWED_ORIGINS: "http://localhost:5173,http://localhost:3000"
+      DATABASE_URL: postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@postgres:5432/${DB_NAME:-datastraw}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      DEBUG: ${DEBUG:-true}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-"http://localhost:5173,http://localhost:3000"}
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8000}:8000"
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
       - ./backend:/app
-    command: python -m uvicorn app.main:app --host 0.0.0.0 --reload
+    command: python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
 
   frontend:
     build:
@@ -44,19 +46,22 @@ services:
       dockerfile: Dockerfile
     container_name: datastraw-frontend
     environment:
-      VITE_API_URL: http://localhost:8000
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+      VITE_APP_NAME: ${VITE_APP_NAME:-DataStraw Smart Roster}
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT:-3000}:3000"
     depends_on:
       - backend
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    command: npm run dev -- --host 0.0.0.0
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+    driver: local
 
 networks:
   default:
     name: datastraw-network
+    driver: bridge
