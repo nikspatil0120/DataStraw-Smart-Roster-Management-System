@@ -8,7 +8,6 @@ import {
   Calendar,
   AlertTriangle,
   BarChart3,
-  Download,
 } from 'lucide-react'
 
 const menuItems = [

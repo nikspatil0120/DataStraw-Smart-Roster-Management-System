@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { schedulingAPI, rosterAPI, conflictAPI } from '../services/api'
-import { Calendar, AlertTriangle, CheckCircle, Loader, ChevronLeft, ChevronRight, Zap, Users, Briefcase, TrendingUp } from 'lucide-react'
+import { Calendar, AlertTriangle, CheckCircle, Loader, ChevronLeft, ChevronRight, Zap, Briefcase, TrendingUp } from 'lucide-react'
 
 export default function Roster() {
   const [month, setMonth] = useState(new Date().getMonth() + 1)
@@ -58,7 +58,7 @@ export default function Roster() {
   })
 
   // Roster queries
-  const { data: rosterData, refetch: refetchRosterDetail } = useQuery({
+  const { data: rosterData } = useQuery({
     queryKey: ['rosters', selectedRoster],
     queryFn: () => (selectedRoster ? rosterAPI.get(selectedRoster) : Promise.reject()),
     enabled: !!selectedRoster,

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { employeeAPI, brandAPI, processAPI, rosterAPI } from '../services/api'
 import { useEffect, useState } from 'react'
 
@@ -112,7 +112,7 @@ export default function Dashboard() {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {statusData.map((entry: any, index: number) => (
+                {statusData.map((_: any, index: number) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={['#0ea5e9', '#06b6d4', '#14b8a6', '#f59e0b'][index % 4]}

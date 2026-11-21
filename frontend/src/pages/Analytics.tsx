@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { useState } from 'react'
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 const analyticsAPI = {
   dashboard: () => fetch('http://localhost:8000/api/analytics/dashboard').then(r => r.json()),

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { rosterAPI, conflictAPI } from '../services/api'
-import { AlertTriangle, CheckCircle, Loader, ChevronLeft, ChevronRight, Shield, Zap, TrendingDown } from 'lucide-react'
+import { AlertTriangle, CheckCircle, Loader, ChevronLeft, ChevronRight, Shield, TrendingDown } from 'lucide-react'
 
 export default function Conflicts() {
   const [selectedRoster, setSelectedRoster] = useState<string | null>(null)
@@ -271,7 +271,7 @@ export default function Conflicts() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           {/* Error Alert */}
-                          {error?.conflictId === conflict.id && (
+                          {error && error.conflictId === conflict.id && (
                             <div className="mb-4 p-4 bg-gradient-to-r from-red-900/40 to-orange-900/40 rounded-xl border border-red-700/50 flex items-start gap-3">
                               <AlertTriangle size={20} className="text-red-300 flex-shrink-0 mt-1" />
                               <div>
