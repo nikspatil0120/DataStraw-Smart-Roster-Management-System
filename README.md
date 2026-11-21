@@ -583,32 +583,43 @@ Both pages show:
 
 ## 🚀 Deployment
 
-### Railway (Recommended)
+**See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed deployment instructions**
+
+### Railway (Recommended - 5 Minutes)
+
+1. Visit https://railway.app
+2. Click "Start New Project"
+3. Select your GitHub repository
+4. Configure environment variables
+5. Click "Deploy Now"
+6. Get your public URL
+
+**Full instructions**: See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) → Option 1
+
+### Render (Free Tier Available)
+
+1. Visit https://render.com
+2. Create new Web Service
+3. Connect GitHub repository
+4. Configure and deploy
+5. Get public URL
+
+**Full instructions**: See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) → Option 2
+
+### Docker (Local or Self-Hosted)
 
 ```bash
-# 1. Connect GitHub repo
-# 2. Set environment variables
-DATABASE_URL=postgresql://...
-SECRET_KEY=...
+# Build and run locally
+docker-compose up
 
-# 3. Deploy
-railway up
+# For production:
+docker build -t datastraw-backend ./backend
+docker build -t datastraw-frontend ./frontend
+docker run -p 8000:8000 datastraw-backend
+docker run -p 5173:5173 datastraw-frontend
 ```
 
-### Render
-
-```bash
-# Connect GitHub repo
-# Auto-deploys on push
-# https://your-app.onrender.com
-```
-
-### Docker
-
-```bash
-docker build -t datastraw .
-docker run -p 8000:8000 -p 5173:5173 datastraw
-```
+**Full instructions**: See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) → Options 3-5
 
 ---
 
