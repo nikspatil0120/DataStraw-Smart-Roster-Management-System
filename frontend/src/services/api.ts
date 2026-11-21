@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// Use relative path /api instead of absolute URL - Vercel will proxy it
-const API_URL = typeof window !== 'undefined' ? '/api' : 'http://localhost:8000/api'
+// Use root path / - Vercel proxy will route /api/* to Railway backend
+const API_URL = typeof window !== 'undefined' ? '' : 'http://localhost:8000'
 
 const api = axios.create({
   baseURL: API_URL,
